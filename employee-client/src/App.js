@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 
 function App() {
     const [employees, setEmployees] = useState([]);
@@ -7,6 +7,8 @@ function App() {
     const [email, setEmail] = useState("");
     const [salary, setSalary] = useState("");
     const [editingId, setEditingId] = useState(null);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [sortOrder, setSortOrder] = useState("asc");
 
     useEffect(() => {
         fetch("https://localhost:7021/api/employees")
@@ -65,9 +67,56 @@ function App() {
             .catch(err => console.error(err));
     };
 
+    const handleSearch = () => {
+        const salaryValue = salary.trim() === "" ? null : Number(salary);
+
+        if (!searchTerm.trim() && salaryValue === null) {
+            fetch("https://localhost:7021/api/employees")
+                .then(res => res.json())
+                .then(data => setEmployees(data))
+                .catch(err => console.error(err));
+            return;
+        }
+
+        const params = new URLSearchParams();
+
+        if (searchTerm.trim() !== "") params.append("name", searchTerm.trim());
+        if (salaryValue !== null) params.append("minSalary", salaryValue);
+        if (sortOrder) params.append("sortOrder", sortOrder);
+
+        fetch(`https://localhost:7021/api/employees/search?${params.toString()}`)
+            .then(res => res.json())
+            .then(data => setEmployees(data))
+            .catch(err => console.error(err));
+    };
+
+
+
     return (
         <div style={{ padding: 20 }}>
             <h1>Employees</h1>
+
+            <div style={{ marginBottom: 20 }}>
+                <input
+                    type="text"
+                    placeholder="Search by name..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <button onClick={handleSearch}>Search</button>
+
+                <select value={sortOrder} onChange={(e) => {
+                    const newOrder = e.target.value;
+                    setSortOrder(newOrder);
+                    handleSearch(newOrder);
+                
+                }}>
+                    <option value="asc">Salary Low → High</option>
+                    <option value="desc">Salary High → Low</option>
+                </select>
+
+
+            </div>
 
             <form onSubmit={editingId ? saveEdit : addEmployee} style={{ marginBottom: 20 }}>
                 <input

@@ -1,0 +1,55 @@
+n/
+obj/
+*.user
+*.rsuser
+*.suo
+*.userprefs
+*.log
+*.vs/
+.vscode/
+TestResults/
+*.dbmdl
+*.dbproj.schemaview
+*.pdb
+*.cache
+*.dll
+*.exe
+*.app
+*.vsconfig
+
+# Rider
+.idea/
+
+# ------------------------------
+# ASP.NET / Entity Framework
+# ------------------------------
+*.db
+*.sqlite
+*.mdf
+*.ldf
+
+# ------------------------------
+# React / Node
+# ------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+.env
+build/
+dist/
+
+# ------------------------------
+# Misc / OS
+# ------------------------------
+.DS_Store
+Thumbs.db
+
+# ------------------------------
+# Optional: coverage, test, temp files
+# ------------------------------
+coverage/
+*.tmp
+*.temp
+

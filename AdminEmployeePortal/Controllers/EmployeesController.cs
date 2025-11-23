@@ -38,6 +38,36 @@ namespace AdminEmployeePortal.Controllers
             return Ok(employee);
         }
 
+        [HttpGet("search")]
+        public IActionResult SearchEmployee(string name, int? minSalary, string sortOrder)
+        {
+            var query = dbContext.Employees.AsQueryable();
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                query = query.Where(emp => emp.Name.ToLower().Contains(name.ToLower()));
+            }
+
+            if (minSalary.HasValue)
+            {
+                query = query.Where(emp => emp.Salary >= minSalary.Value);
+            }
+
+            if(sortOrder=="asc")
+            {
+                query = query.OrderBy(emp => emp.Salary);
+            }
+            else if(sortOrder=="desc")
+            {
+                query = query.OrderByDescending(emp => emp.Salary);
+            }
+
+            var results = query.ToList();
+            return Ok(results);
+        }
+
+
+
         [HttpPost]
         public IActionResult AddEmployee(AddEmployeeDto addEmployeeDto)
         {
