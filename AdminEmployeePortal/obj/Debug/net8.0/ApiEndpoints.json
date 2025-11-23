@@ -1,5 +1,21 @@
 [
   {
+    "ContainingType": "AdminEmployeePortal.Controllers.AuthController",
+    "Method": "Login",
+    "RelativePath": "api/Auth/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "AdminEmployeePortal.Controllers.LoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "AdminEmployeePortal.Controllers.EmployeesController",
     "Method": "GetAllEmployees",
     "RelativePath": "api/Employees",
@@ -103,26 +119,5 @@
       }
     ],
     "ReturnTypes": []
-  },
-  {
-    "ContainingType": "AdminEmployeePortal.Controllers.WeatherForecastController",
-    "Method": "Get",
-    "RelativePath": "WeatherForecast",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[AdminEmployeePortal.WeatherForecast, AdminEmployeePortal, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ],
-    "EndpointName": "GetWeatherForecast"
   }
 ]

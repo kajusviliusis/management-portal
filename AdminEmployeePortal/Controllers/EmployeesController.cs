@@ -1,11 +1,13 @@
 ﻿using AdminEmployeePortal.Data;
 using AdminEmployeePortal.Models;
 using AdminEmployeePortal.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdminEmployeePortal.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EmployeesController : ControllerBase

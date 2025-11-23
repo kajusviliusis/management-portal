@@ -10,12 +10,42 @@ function App() {
     const [searchTerm, setSearchTerm] = useState("");
     const [sortOrder, setSortOrder] = useState("asc");
 
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [token, setToken] = useState(null);
+
     useEffect(() => {
-        fetch("https://localhost:7021/api/employees")
+        if (token) fetchEmployees();
+    }, [token]);
+
+    const fetchEmployees = () => {
+        fetch("https://localhost:7021/api/employees", {
+            headers: { Authorization: `Bearer ${token}` }
+        })
             .then(res => res.json())
             .then(data => setEmployees(data))
             .catch(err => console.error(err));
-    }, []);
+    };
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+
+        fetch("https://localhost:7021/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("Invalid credentials");
+                return res.json();
+            })
+            .then(data => {
+                setToken(data.token);
+                setUsername("");
+                setPassword("");
+            })
+            .catch(err => alert(err.message));
+    };
 
     const addEmployee = (e) => {
         e.preventDefault();
@@ -24,7 +54,10 @@ function App() {
 
         fetch("https://localhost:7021/api/employees", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
             body: JSON.stringify(newEmployee)
         })
             .then(res => res.json())
@@ -36,7 +69,10 @@ function App() {
     };
 
     const deleteEmployee = (id) => {
-        fetch(`https://localhost:7021/api/employees/${id}`, { method: "DELETE" })
+        fetch(`https://localhost:7021/api/employees/${id}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` }
+        })
             .then(() => setEmployees(employees.filter(emp => emp.id !== id)))
             .catch(err => console.error(err));
     };
@@ -56,7 +92,10 @@ function App() {
 
         fetch(`https://localhost:7021/api/employees/${editingId}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
             body: JSON.stringify(updatedEmployee)
         })
             .then(() => {
@@ -68,10 +107,13 @@ function App() {
     };
 
     const handleSearch = () => {
+        if (!token) return;
         const salaryValue = salary.trim() === "" ? null : Number(salary);
 
         if (!searchTerm.trim() && salaryValue === null) {
-            fetch("https://localhost:7021/api/employees")
+            fetch("https://localhost:7021/api/employees", {
+                headers: { Authorization: `Bearer ${token}` }
+            })
                 .then(res => res.json())
                 .then(data => setEmployees(data))
                 .catch(err => console.error(err));
@@ -79,18 +121,42 @@ function App() {
         }
 
         const params = new URLSearchParams();
-
         if (searchTerm.trim() !== "") params.append("name", searchTerm.trim());
         if (salaryValue !== null) params.append("minSalary", salaryValue);
         if (sortOrder) params.append("sortOrder", sortOrder);
 
-        fetch(`https://localhost:7021/api/employees/search?${params.toString()}`)
+        fetch(`https://localhost:7021/api/employees/search?${params.toString()}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
             .then(res => res.json())
             .then(data => setEmployees(data))
             .catch(err => console.error(err));
     };
 
-
+    if (!token) {
+        return (
+            <div style={{ padding: 20 }}>
+                <h1>Login</h1>
+                <form onSubmit={handleLogin}>
+                    <input
+                        type="text"
+                        placeholder="Username"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                        required
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        required
+                    />
+                    <button type="submit">Login</button>
+                </form>
+            </div>
+        );
+    }
 
     return (
         <div style={{ padding: 20 }}>
@@ -108,14 +174,11 @@ function App() {
                 <select value={sortOrder} onChange={(e) => {
                     const newOrder = e.target.value;
                     setSortOrder(newOrder);
-                    handleSearch(newOrder);
-                
+                    handleSearch();
                 }}>
                     <option value="asc">Salary Low → High</option>
                     <option value="desc">Salary High → Low</option>
                 </select>
-
-
             </div>
 
             <form onSubmit={editingId ? saveEdit : addEmployee} style={{ marginBottom: 20 }}>
