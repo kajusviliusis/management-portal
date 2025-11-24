@@ -9,7 +9,23 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "AdminEmployeePortal.Controllers.LoginRequest",
+        "Type": "AdminEmployeePortal.Models.LoginRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AdminEmployeePortal.Controllers.AuthController",
+    "Method": "Register",
+    "RelativePath": "api/Auth/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "AdminEmployeePortal.Models.RegisterRequestDto",
         "IsRequired": true
       }
     ],

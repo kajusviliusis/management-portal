@@ -14,11 +14,18 @@ function App() {
     const [password, setPassword] = useState("");
     const [token, setToken] = useState(null);
 
+    const [regUsername, setRegUsername] = useState("");
+    const [regPassword, setRegPassword] = useState("");
+
+
     useEffect(() => {
         if (token) fetchEmployees();
     }, [token]);
 
     const fetchEmployees = () => {
+
+        if (!token) return;
+
         fetch("https://localhost:7021/api/employees", {
             headers: { Authorization: `Bearer ${token}` }
         })
@@ -43,6 +50,27 @@ function App() {
                 setToken(data.token);
                 setUsername("");
                 setPassword("");
+            })
+            .catch(err => alert(err.message));
+    };
+
+    const handleRegister = (e) => {
+        e.preventDefault();
+
+        fetch("https://localhost:7021/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username: regUsername, password: regPassword})
+        })
+            .then(async res => {
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || "Registration failed");
+                return data;
+            })
+            .then(data => {
+                alert(data.message);
+                setRegUsername("");
+                setRegPassword("");
             })
             .catch(err => alert(err.message));
     };
@@ -154,6 +182,27 @@ function App() {
                     />
                     <button type="submit">Login</button>
                 </form>
+
+                <hr style={{ margin: "20px 0" }} />
+
+                <h1>Register</h1>
+                <form onSubmit={handleRegister}>
+                    <input
+                        type="text"
+                        placeholder="Username"
+                        value={regUsername}
+                        onChange={e => setRegUsername(e.target.value)}
+                        required
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={regPassword}
+                        onChange={e => setRegPassword(e.target.value)}
+                        required
+                    />
+                    <button type="submit">Register</button>
+                </form>
             </div>
         );
     }
@@ -238,6 +287,19 @@ function App() {
                     ))}
                 </tbody>
             </table>
+            {token && (
+                <button
+                    onClick={() => {
+                        setToken(null);
+                        localStorage.removeItem("token");
+                        setEmployees([]);
+                    }}
+                    style={{ marginBottom: "20px" }}
+                >
+                    Logout
+                </button>
+            )}
+
         </div>
     );
 }
