@@ -1,4 +1,5 @@
 using AdminEmployeePortal.Data;
+using AdminEmployeePortal.Services.Exports;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -74,6 +75,8 @@ builder.Services.AddCors(options =>
         .AllowAnyMethod();
     });
 });
+
+builder.Services.AddScoped<IEmployeeExportService, EmployeeExportService>();
 
 var app = builder.Build();
 

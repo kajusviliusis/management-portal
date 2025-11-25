@@ -4,6 +4,7 @@ using AdminEmployeePortal.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using AdminEmployeePortal.Services.Exports;
 
 namespace AdminEmployeePortal.Controllers
 {
@@ -13,10 +14,13 @@ namespace AdminEmployeePortal.Controllers
     public class EmployeesController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
+        private readonly IEmployeeExportService exportService;
 
-        public EmployeesController(ApplicationDbContext dbContext)
+        public EmployeesController(ApplicationDbContext dbContext,
+                                    IEmployeeExportService exportService)
         {
             this.dbContext = dbContext;
+            this.exportService = exportService;
         }
 
 
@@ -169,7 +173,13 @@ namespace AdminEmployeePortal.Controllers
             await dbContext.SaveChangesAsync();
 
             return Ok(new {imagePath = employee.ImagePath});
+        }
 
+        [HttpGet("export")]
+        public async Task<IActionResult> ExportEmployees()
+        {
+            var fileBytes = await exportService.ExportEmployeesToCsvAsync();
+            return File(fileBytes, "text/csv", $"employees_{DateTime.UtcNow:yyyyMMdd}.csv");
         }
     }
 }

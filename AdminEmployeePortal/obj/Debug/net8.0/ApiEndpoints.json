@@ -133,6 +133,16 @@
   },
   {
     "ContainingType": "AdminEmployeePortal.Controllers.EmployeesController",
+    "Method": "ExportEmployees",
+    "RelativePath": "api/Employees/export",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AdminEmployeePortal.Controllers.EmployeesController",
     "Method": "SearchEmployee",
     "RelativePath": "api/Employees/search",
     "HttpMethod": "GET",

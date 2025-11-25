@@ -270,6 +270,18 @@
           }
         }
       }
+    },
+    "/api/Employees/export": {
+      "get": {
+        "tags": [
+          "Employees"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {
