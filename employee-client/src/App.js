@@ -192,6 +192,37 @@ function App() {
             });
     };
 
+    const downloadCsv = async () => {
+        if (!token) return;
+
+        try {
+            const response = await fetch("https://localhost:7021/api/employees/export", {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "text/csv"
+                }
+            });
+
+            if (!response.ok) throw new Error("Failed to download CSV");
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `employees_${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error(error);
+            alert("CSV download failed");
+        }
+    };
+
+
     if (!token) {
         return (
             <div style={{ padding: 20 }}>
@@ -259,6 +290,12 @@ function App() {
                     <option value="asc">Salary Low → High</option>
                     <option value="desc">Salary High → Low</option>
                 </select>
+                <button
+                    onClick={downloadCsv}
+                    style={{ marginLeft: 10, backgroundColor: "#4CAF50", color: "white", padding: "5px 10px" }}
+                >
+                    Export CSV
+                </button>
             </div>
 
             <form onSubmit={editingId ? saveEdit : addEmployee} style={{ marginBottom: 20 }}>
