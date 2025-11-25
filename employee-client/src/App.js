@@ -60,7 +60,7 @@ function App() {
         fetch("https://localhost:7021/api/auth/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username: regUsername, password: regPassword})
+            body: JSON.stringify({ username: regUsername, password: regPassword })
         })
             .then(async res => {
                 const data = await res.json();
@@ -159,6 +159,37 @@ function App() {
             .then(res => res.json())
             .then(data => setEmployees(data))
             .catch(err => console.error(err));
+    };
+
+    const uploadImage = (employeeId, file) =>
+    {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        fetch(`https://localhost:7021/api/employees/${employeeId}/upload-image`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            body: formData
+        })
+            .then(res => {
+                if (!res.ok) throw new Error('Upload failed');
+                return res.json();
+            })
+            .then(data => {
+
+                setEmployees(employees.map(emp =>
+                    emp.id === employeeId
+                        ? { ...emp, imagePath: data.imagePath }
+                        : emp
+                ));
+                alert('Image uploaded successfully!');
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Failed to upload image');
+            });
     };
 
     if (!token) {
@@ -265,6 +296,7 @@ function App() {
             <table border="1" cellPadding="5">
                 <thead>
                     <tr>
+                        <th>Image</th>
                         <th>Name</th>
                         <th>Phone</th>
                         <th>Email</th>
@@ -275,6 +307,27 @@ function App() {
                 <tbody>
                     {employees.map(emp => (
                         <tr key={emp.id}>
+                            <td>
+                                {emp.imagePath ? (
+                                    <img
+                                        src={`https://localhost:7021${emp.imagePath}`}
+                                        alt={emp.name}
+                                        style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: '50%' }}
+                                    />
+                                ) : (
+                                    <div style={{
+                                        width: 50,
+                                        height: 50,
+                                        backgroundColor: '#ddd',
+                                        borderRadius: '50%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center'
+                                    }}>
+                                        {emp.name.charAt(0)}
+                                    </div>
+                                )}
+                            </td>
                             <td>{emp.name}</td>
                             <td>{emp.phone}</td>
                             <td>{emp.email}</td>
@@ -282,6 +335,20 @@ function App() {
                             <td>
                                 <button onClick={() => startEdit(emp)}>Edit</button>
                                 <button onClick={() => deleteEmployee(emp.id)}>Delete</button>
+
+                                <input
+                                    type="file"
+                                    id={`file-${emp.id}`}
+                                    accept="image/jpeg,image/png,image/jpg"
+                                    style={{ display: 'none' }}
+                                    onChange={(e) => {
+                                        const file = e.target.files[0];
+                                        if (file) uploadImage(emp.id, file);
+                                    }}
+                                />
+                                <button onClick={() => document.getElementById(`file-${emp.id}`).click()}>
+                                    Upload Photo
+                                </button>
                             </td>
                         </tr>
                     ))}

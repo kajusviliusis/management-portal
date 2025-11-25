@@ -141,3 +141,4 @@ C:\Users\KV\source\repos\AdminEmployeePortal\AdminEmployeePortal\bin\Debug\net8.
 C:\Users\KV\source\repos\AdminEmployeePortal\AdminEmployeePortal\obj\Debug\net8.0\AdminEmployeePortal.sourcelink.json
 C:\Users\KV\source\repos\AdminEmployeePortal\AdminEmployeePortal\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\KV\source\repos\AdminEmployeePortal\AdminEmployeePortal\bin\Debug\net8.0\BCrypt.Net-Next.dll
+C:\Users\KV\source\repos\AdminEmployeePortal\AdminEmployeePortal\bin\Debug\net8.0\AdminEmployeePortal.staticwebassets.runtime.json

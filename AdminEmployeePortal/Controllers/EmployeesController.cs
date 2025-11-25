@@ -133,7 +133,7 @@ namespace AdminEmployeePortal.Controllers
                 return BadRequest("No image provided");
             }
 
-            var allowedExtensions = new[] { ".jpg", ".jpeg", "png" };
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
             var extension = Path.GetExtension(image.FileName).ToLower();
             if(!allowedExtensions.Contains(extension))
             {
