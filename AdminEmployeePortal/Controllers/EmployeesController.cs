@@ -118,5 +118,58 @@ namespace AdminEmployeePortal.Controllers
 
             return Ok();
         }
+
+        [HttpPost("{id}/upload-image")]
+        public async Task<IActionResult> UploadImage(Guid id, IFormFile image)
+        {
+            var employee = await dbContext.Employees.FindAsync(id);
+            if (employee==null)
+            {
+                return NotFound();
+            }
+
+            if(image==null || image.Length==0)
+            {
+                return BadRequest("No image provided");
+            }
+
+            var allowedExtensions = new[] { ".jpg", ".jpeg", "png" };
+            var extension = Path.GetExtension(image.FileName).ToLower();
+            if(!allowedExtensions.Contains(extension))
+            {
+                return BadRequest("Only jpg and png files allowed");
+            }
+            //5mb max
+            if(image.Length > 5 * 1024 * 1024)
+            {
+                return BadRequest("Must be less than 5 Mb");
+            }
+
+            if(!string.IsNullOrEmpty(employee.ImagePath))
+            {
+                var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", employee.ImagePath.TrimStart('/'));
+                if(System.IO.File.Exists(oldImagePath))
+                {
+                    System.IO.File.Delete(oldImagePath);
+                }
+            }
+
+            var fileName = $"{Guid.NewGuid()}-{extension}";
+            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "employees");
+            var filePath = Path.Combine(folderPath, fileName);
+
+            Directory.CreateDirectory(folderPath);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await image.CopyToAsync(stream);
+            }
+
+            employee.ImagePath = $"/images/employees/{fileName}";
+            await dbContext.SaveChangesAsync();
+
+            return Ok(new {imagePath = employee.ImagePath});
+
+        }
     }
 }
