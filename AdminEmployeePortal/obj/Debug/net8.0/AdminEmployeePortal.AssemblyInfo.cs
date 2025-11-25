@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AdminEmployeePortal")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+361d1a1b9b301e9abee6b239c9a8ca3c4ef212f3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+97d5f04e36262a63196b3feb18e7a409b1f0a051")]
 [assembly: System.Reflection.AssemblyProductAttribute("AdminEmployeePortal")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AdminEmployeePortal")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
